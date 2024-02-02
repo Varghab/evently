@@ -1,0 +1,8 @@
+{
+    "rewrites":[
+        {
+            "source":"/api/webhook/clerk",
+            "destination":"https://evently-five-sooty.vercel.app/api/webhook/clerk"
+        }
+    ]
+}
