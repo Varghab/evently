@@ -6,9 +6,7 @@ import { clerkClient } from '@clerk/nextjs'
 import { NextResponse } from 'next/server'
 
 export async function POST(req: Request) {
-  // You can find this in the Clerk Dashboard -> Webhooks -> choose the webhook
   const WEBHOOK_SECRET = process.env.WEBHOOK_SECRET
-  console.log("Request recieved!");
   
   if (!WEBHOOK_SECRET) {
     throw new Error('Please add WEBHOOK_SECRET from Clerk Dashboard to .env or .env.local')
@@ -100,8 +98,8 @@ export async function POST(req: Request) {
 
     const deletedUser = await deleteUser(id!)
 
-    return NextResponse.json({ message: 'OK', user: deletedUser })
+    return Response.json({ message: 'OK', user: deletedUser })
   }
  
-  return new Response('', { status: 200 })
+  return Response.json({message:'Recieved',status:200})
 }
