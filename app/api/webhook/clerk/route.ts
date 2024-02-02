@@ -98,8 +98,8 @@ export async function POST(req: Request) {
 
     const deletedUser = await deleteUser(id!)
 
-    return Response.json({ message: 'OK', user: deletedUser })
+    return Response.json({ message: "Received" });
   }
  
-  return Response.json({message:'Recieved',status:200})
+  return Response.json({ message: "Received" });
 }
