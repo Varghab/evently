@@ -15,7 +15,7 @@ const UserCard = ({isCurrentUser, userDetails, children}: UserCardProps) => {
         <div className='flex flex-col gap-3 wrapper'>
           <Image className='rounded-full' src={photo} width={100} height={100} alt="Profile Image" />
           <div>
-            <h5 className='text-2xl font-bold'>{firstName + ' ' + lastName}</h5>
+            <h5 className='text-2xl font-bold'>{firstName + ' ' + !lastName?"":lastName}</h5>
             <p>@{username}</p>
           </div>
         </div>

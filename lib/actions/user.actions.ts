@@ -14,7 +14,9 @@ export async function createUser(user: CreateUserParams) {
   try {
     await connectToDatabase();
     console.log("Connected to database");        
-    const newUser = await User.create(user)    
+    const newUser = await User.create(user) 
+    revalidatePath('/myprofile')   
+    revalidatePath('/myprofile/:name')   
     console.log(newUser);
     return JSON.parse(JSON.stringify(newUser))
   } catch (error) {
