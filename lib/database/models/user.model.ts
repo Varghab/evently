@@ -19,17 +19,14 @@ const UserSchema = new mongoose.Schema({
     firstName:{
         type: String,
         required: true,
-        default: null
     },
     lastName:{
         type: String,
         required: true,
-        default: null
     },
     photo:{
         type: String,
         required: true,
-        default:null
     }
 
 })
