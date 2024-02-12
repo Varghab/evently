@@ -1,4 +1,5 @@
 // ====== USER PARAMS
+
 export type CreateUserParams = {
     clerkId: string
     firstName: string
@@ -6,6 +7,11 @@ export type CreateUserParams = {
     username: string
     email: string
     photo: string
+  }
+  
+  export type UserParams = CreateUserParams & {
+    _id: string
+    __v: number
   }
   
   export type UpdateUserParams = {

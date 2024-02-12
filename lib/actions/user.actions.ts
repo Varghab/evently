@@ -12,9 +12,11 @@ import { CreateUserParams, UpdateUserParams } from '@/types'
 
 export async function createUser(user: CreateUserParams) {
   try {
-    await connectToDatabase()
-    console.log("Connected to database");
-    const newUser = await User.create(user)
+    await connectToDatabase();
+    console.log("Connected to database");  
+    console.log(user);
+      
+    const newUser = await User.create(user)    
     return JSON.parse(JSON.stringify(newUser))
   } catch (error) {
     handleError(error)
@@ -24,9 +26,7 @@ export async function createUser(user: CreateUserParams) {
 export async function getUserById(userId: string) {
   try {
     await connectToDatabase()
-
     const user = await User.findById(userId)
-
     if (!user) throw new Error('User not found')
     return JSON.parse(JSON.stringify(user))
   } catch (error) {
@@ -75,6 +75,25 @@ export async function deleteUser(clerkId: string) {
     revalidatePath('/')
 
     return deletedUser ? JSON.parse(JSON.stringify(deletedUser)) : null
+  } catch (error) {
+    handleError(error)
+  }
+}
+
+export async function getUserByUsername(username:string){
+  try {
+    await connectToDatabase();
+    const user = await User.findOne({username});
+    if(user){
+      return{
+        success: true,
+        data: JSON.parse(JSON.stringify(user))
+      }
+    }else{
+      return{
+        success: false,
+      }
+    } 
   } catch (error) {
     handleError(error)
   }

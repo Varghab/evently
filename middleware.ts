@@ -1,22 +1,25 @@
 import { authMiddleware } from "@clerk/nextjs";
+import { revalidatePath } from "next/cache";
+import { redirect } from "next/navigation";
+import { NextResponse } from "next/server";
  
 export default authMiddleware({
   publicRoutes: [
     '/',
-    '/events/:id',
     '/api/webhook/clerk',
     '/api/webhook/stripe',
     '/api/uploadthing',
-    "/api/webhook(.*)"
+    "/api/webhook(.*)",
   ],
   ignoredRoutes: [
     '/api/webhook/clerk',
     '/api/webhook/stripe',
     '/api/uploadthing'
-  ]
+  ],
 });
  
 export const config = {
   matcher: ['/((?!.+\\.[\\w]+$|_next).*)', '/', '/(api|trpc)(.*)'],
+
 };
  

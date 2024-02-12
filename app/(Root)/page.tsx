@@ -1,9 +1,20 @@
+import Collection from "@/components/shared/Collection";
 import { Button } from "@/components/ui/button";
+import { getAllEvents } from "@/lib/actions/event.actions";
+import { IEvent } from "@/lib/database/models/event.model";
 import { clerkClient } from "@clerk/nextjs";
 import Image from "next/image";
 import Link from "next/link";
+import ReactDatePicker from "react-datepicker";
 
 export default async function Home() {
+  const events = await getAllEvents({
+    query:"",
+    limit:6,
+    category:"",
+    page:1
+  }) as {data:IEvent[],totalPages:number}
+
   return (
     <>
       <section className="bg-primary-50 bg-dotted-pattern bg-contain py-5 md:py-10">
@@ -24,6 +35,16 @@ export default async function Home() {
           Search
           CategoryFilter
         </div>
+        <Collection
+          data={events?.data}
+          emptyTitle="No events found"
+          emptyStateSubtext="Come back later"
+          totalPages={events?.totalPages}
+          limit={6}
+          page={0}
+          collectionType="Events_Organized"
+          urlParamName=""
+        />
       </section>
     </>
   );
