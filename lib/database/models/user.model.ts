@@ -23,13 +23,10 @@ const UserSchema = new mongoose.Schema({
     },
     lastName:{
         type: String,
-        required: true,
         default:"",
     },
     photo:{
         type: String,
-        required: true,
-        default:"",
     }
 
 })
