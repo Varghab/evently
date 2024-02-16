@@ -8,6 +8,7 @@ import Category from "../database/models/category.model";
 import { z } from "zod";
 import { eventFormSchema } from "../validator";
 import { revalidatePath } from "next/cache";
+import { getUserByUsername } from "./user.actions";
 
 export async function createEvent({ userId, event, path }: CreateEventParams) {
   try {
@@ -86,5 +87,28 @@ export async function updateEventById({eventId, values}:{eventId:string, values:
         }
     } catch (error) {
         handleError(error)
+    }
+}
+
+export async function getAllEventsByUserId(username:any){    
+    try {
+        await connectToDatabase();
+        const res = await getUserByUsername(username);                
+        if(res?.success){
+            const allEventsByUser = await populateQuery(Event.find({organizer: res.data._id}));
+            if(allEventsByUser){
+                revalidatePath('/myprofile/:name')
+                revalidatePath('/myprofile')
+                return {
+                    success: true, 
+                    data: JSON.parse(JSON.stringify(allEventsByUser))
+                }
+
+            }
+        }
+        }   
+        
+    catch (error) {
+        handleError(error); 
     }
 }

@@ -1,10 +1,11 @@
-import React from 'react'
-import { Tab } from '../UserCard'
+import { IEvent } from '@/lib/database/models/event.model';
+import Collection from '../Collection';
+import React from 'react';
 
-const EventsOrganized = () => {
+const EventsOrganized = ({children}:{children: React.ReactNode}) => {
   return (
     <div>
-      Events Organized
+      {children}
     </div>
   )
 }

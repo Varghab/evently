@@ -16,7 +16,6 @@ const ProfileLayout = async ({params:{name},
     const isCurrentUser = user?.username === name; 
     const {success, data} = await getUserByUsername(name) as {success:true, data:any};
     // if success -> false, then user not found!
-    console.log(success);
     
   return (
     <div className=''>
@@ -25,7 +24,7 @@ const ProfileLayout = async ({params:{name},
         <h5 className='h5-bold text-gray-700'>User not found!</h5>
         <p className='text-md mt-1'>You have visited a wrong link. <Link className='text-primary-500' href="/">Click here</Link> to visit the home page.</p>
       </div>
-      :<UserCard children={children} isCurrentUser={isCurrentUser} userDetails = {data}/>}
+      :<UserCard searchedUsername={name} children={children} isCurrentUser={isCurrentUser} userDetails = {data}/>}
     </div>
   )
 }
