@@ -9,6 +9,10 @@ import Event from '@/lib/database/models/event.model'
 import { handleError } from '@/lib/utils'
 
 import { CreateUserParams, UpdateUserParams } from '@/types'
+import { z } from 'zod'
+import { userUpdateSchema } from '../validator'
+import { clerkClient } from '@clerk/nextjs'
+import { redirect } from 'next/navigation'
 
 export async function createUser(user: CreateUserParams) {
   try {
@@ -35,7 +39,7 @@ export async function getUserById(userId: string) {
   }
 }
 
-export async function updateUser(clerkId: string, user: UpdateUserParams) {
+export async function updateUser(clerkId: string, user: UpdateUserParams | z.infer<typeof userUpdateSchema>) {
   try {
     await connectToDatabase()
 
@@ -54,7 +58,7 @@ export async function deleteUser(clerkId: string) {
 
     // Find user to delete
     const userToDelete = await User.findOne({ clerkId })
-
+    
     if (!userToDelete) {
       throw new Error('User not found')
     }
@@ -62,10 +66,11 @@ export async function deleteUser(clerkId: string) {
     // Unlink relationships
     await Promise.all([
       // Update the 'events' collection to remove references to the user
-      Event.updateMany(
-        { _id: { $in: userToDelete.events } },
-        { $pull: { organizer: userToDelete._id } }
-      ),
+      // Event.updateMany(
+      //   { _id: { $in: userToDelete.events } },
+      //   { $pull: { organizer: userToDelete._id } }
+      // ),
+      Event.deleteMany({'organizer._id':userToDelete._id}),
 
       // Update the 'orders' collection to remove references to the user
       Order.updateMany({ _id: { $in: userToDelete.orders } }, { $unset: { buyer: 1 } }),
@@ -97,5 +102,35 @@ export async function getUserByUsername(username:string){
     } 
   } catch (error) {
     handleError(error)
+  }
+}
+
+export async function updateUserProfile({clerkId, userDetails}:{clerkId: string, userDetails:z.infer<typeof userUpdateSchema>}){
+  try {
+    await connectToDatabase();
+    const user = await clerkClient.users.updateUser(clerkId, userDetails);
+    if(user){
+      const updatedUser = await updateUser(clerkId, userDetails);
+      if(updatedUser){
+        revalidatePath('/myprofile');
+        revalidatePath('/myprofile/:name')
+        return {
+          success:true,
+          data:updatedUser
+        }
+      }
+    }else{
+      return {
+        success:false,
+        messsage:"User update failed"
+      }
+    }
+  } catch (error:any) {
+    if(error.clerkError){
+      return {
+        success: false,
+        message: error?.errors[0]?.message
+      }
+    }    
   }
 }

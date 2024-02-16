@@ -12,11 +12,12 @@ type ProfileLayoutProps = {
 const ProfileLayout = async ({params:{name},
     children,
   }:ProfileLayoutProps) => {
-  const user = await currentUser();
-  const isCurrentUser = user?.username === name;
-  const {success, data} = await getUserByUsername(name) as {success:true, data:any};
-  // if success -> false, then user not found!
-  
+    const user = await currentUser();
+    const isCurrentUser = user?.username === name; 
+    const {success, data} = await getUserByUsername(name) as {success:true, data:any};
+    // if success -> false, then user not found!
+    console.log(success);
+    
   return (
     <div className=''>
       {!success?

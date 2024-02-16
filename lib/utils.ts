@@ -4,6 +4,7 @@ import { twMerge } from 'tailwind-merge'
 import qs from 'query-string'
 
 import { UrlQueryParams, RemoveUrlQueryParams } from '@/types'
+import { currentUser } from '@clerk/nextjs'
 
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs))

@@ -42,7 +42,7 @@ const EventDetails = async ({params:{id}, searchParams:{imageUrl}}:EventProps) =
                             <p className='rounded-full max-w-fit bg-green-500/10 text-green-700 font-bold  py-2 px-4'>{event.isFree?"Free":`$${event.price}`}</p>
                             <p className='rounded-full max-w-fit bg-grey-500/10 py-2 text-grey-500 px-4'>{event.category.name}</p>
                         </div>
-                        <p className='p-medium-18 mt-4 md:mt-0 '>by <span className="text-primary-500/80">{event.organizer.firstName} {event.organizer.lastName}</span></p>
+                        {event.organizer?.firstName&&event.organizer?.lastName&&<p className='p-medium-18 mt-4 md:mt-0 '>by <span className="text-primary-500/80">{event.organizer?.firstName} {event.organizer?.lastName}</span></p>}
                     </div>
                     <Button asChild size="lg" className="md:button rounded-full py-0 px-6 mt-6 w-fit">
                         <Link href="#events">Buy Ticket</Link>
