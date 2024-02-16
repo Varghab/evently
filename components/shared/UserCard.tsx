@@ -3,7 +3,6 @@ import { UserParams } from '@/types'
 import Image from 'next/image'
 import React, { useState } from 'react'
 import { Button } from '../ui/button';
-import { getCurrentUserStatus } from '@/lib/utils';
 import Profile from './MyProfile/Profile';
 import MyTickets from './MyProfile/MyTickets';
 import EventsOrganized from './MyProfile/EventsOrganized';
@@ -32,6 +31,7 @@ const UserCard = ({isCurrentUser, userDetails, children}: UserCardProps) => {
   const handleTab = (tab:Tab) => {
     setCurrentTab(tab)
   }
+
   return (
     <div className=''>
       <section className='py-6 bg-dotted-pattern bg-cover bg-center bg-primary-50'>
