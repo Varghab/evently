@@ -15,7 +15,6 @@ type CollectionProps = {
 }
 
 const Collection = ({data, emptyTitle, emptyStateSubtext, page, totalPages=0, urlParamName, collectionType}:CollectionProps) => {
-  console.log(data);
   const {sessionClaims} = auth();
   const userId = sessionClaims?.userId;
   

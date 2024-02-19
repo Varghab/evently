@@ -10,7 +10,8 @@ export default authMiddleware({
     '/api/webhook/stripe',
     '/api/uploadthing',
     "/api/webhook(.*)",
-    "/myprofile/:name"
+    "/myprofile/:name",
+    "/events/:id"
   ],
   ignoredRoutes: [
     '/api/webhook/clerk',

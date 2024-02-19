@@ -1,5 +1,5 @@
 "use server"
-import { CreateEventParams, GetAllEventsParams } from "@/types";
+import { CreateEventParams, DeleteEventParams, GetAllEventsParams } from "@/types";
 import Event, { IEvent } from "../database/models/event.model";
 import { handleError } from "../utils";
 import { connectToDatabase } from "../database";
@@ -74,12 +74,14 @@ export async function getAllEvents({query, category, limit=6, page}:GetAllEvents
 export async function updateEventById({eventId, values}:{eventId:string, values:z.infer<typeof eventFormSchema>}){
     try {
         await connectToDatabase();
-        const event = await Event.findOneAndUpdate({_id:eventId}, values, {
+        const event = await Event.findOneAndUpdate({_id:eventId}, {...values, category: values.categoryId}, {
             new:true,
             runValidators:true
         })        
+        
         if(event){
             revalidatePath('/')
+            revalidatePath('/myprofile/:name')
             return{
                 success: true,
                 data: JSON.parse(JSON.stringify(event)),
@@ -97,18 +99,55 @@ export async function getAllEventsByUserId(username:any){
         if(res?.success){
             const allEventsByUser = await populateQuery(Event.find({organizer: res.data._id}));
             if(allEventsByUser){
-                revalidatePath('/myprofile/:name')
-                revalidatePath('/myprofile')
+                // revalidatePath('/myprofile/:name')
+                // revalidatePath('/myprofile')
                 return {
                     success: true, 
                     data: JSON.parse(JSON.stringify(allEventsByUser))
                 }
-
             }
         }
         }   
         
     catch (error) {
         handleError(error); 
+    }
+}
+
+export async function getEventsByCategory({categoryName, id}:{categoryName:string, id: string}){
+    try {
+        await connectToDatabase();
+        const condition = {
+            _id: {
+                '$ne': id
+            },
+        }
+        let relatedEvent = await populateQuery(Event.find(condition));
+        relatedEvent = relatedEvent.filter((event:IEvent)=>event?.category?.name===categoryName)
+        
+        if(relatedEvent){
+            return{
+                success: true,
+                data: JSON.parse(JSON.stringify(relatedEvent))
+            }
+        }else{
+            return {
+                success: false,
+                data: []
+            }
+        }
+        
+    } catch (error) {
+        handleError(error);
+    }
+}
+
+export async function deleteEventById({eventId, path}:DeleteEventParams){
+    try {
+        await connectToDatabase();
+        const deletedEvent = await Event.findByIdAndDelete(eventId);
+        if(deletedEvent) revalidatePath(path);
+    } catch (error) {
+        handleError(error)
     }
 }

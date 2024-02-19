@@ -3,6 +3,9 @@ import { formatDateTime } from '@/lib/utils'
 import Image from 'next/image'
 import Link from 'next/link'
 import React from 'react'
+import DeleteDialog from './DeleteDialog'
+// import { ToastContainer, toast } from 'react-toastify';
+// import 'react-toastify/dist/ReactToastify.css';
 
 type CardProps = {
   event: IEvent,
@@ -23,7 +26,7 @@ const Card = ({event, hasOrderLink, hidePrice, currentUser}:CardProps) => {
           <div className='p-5 flex flex-col min-h-[230px] gap-3'>
             {!hidePrice&&<div className='flex flex-col gap-3 md:gap-4'>
                 <div className='flex items-center gap-4'>
-                  <span className='rounded-full py-2 px-4 bg-green-600/20 font-semibold text-green-700'>{event.isFree?"FREE" : `$${event.price}`}</span>
+                  <span className='rounded-full py-2 px-4 bg-green-600/20 font-semibold text-green-700'>{event.isFree?"FREE" : `₹${event.price}`}</span>
                   <p className='bg-primary-500/10 rounded-full py-2 px-4'>{event?.category?.name}</p>
                 </div>
             </div>}
@@ -37,8 +40,9 @@ const Card = ({event, hasOrderLink, hidePrice, currentUser}:CardProps) => {
       </Link>
       {currentUser&&<div className='absolute right-4 bg-white rounded-lg top-3 flex flex-col gap-3 items-center py-2 px-2'>
         <Link href={`/events/${event?._id}/update`}><Image className='cursor-pointer' src="/assets/icons/edit.svg" alt="edit" width={20} height={20} /></Link>
-        <Link href="/"><Image className='cursor-pointer' src="/assets/icons/delete.svg" alt="edit" width={20} height={20} /></Link>
+        <DeleteDialog eventId = {event._id} />
       </div>}
+      {/* <ToastContainer /> */}
     </div>
   )
 }

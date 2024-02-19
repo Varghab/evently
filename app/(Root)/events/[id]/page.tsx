@@ -1,8 +1,11 @@
+import CheckoutButton from '@/components/shared/CheckoutButton'
+import Collection from '@/components/shared/Collection'
 import { Button } from '@/components/ui/button'
 import { getCategoryById } from '@/lib/actions/category.actions'
-import { getEventById } from '@/lib/actions/event.actions'
+import { getEventById, getEventsByCategory } from '@/lib/actions/event.actions'
 import { getUserById } from '@/lib/actions/user.actions'
 import { formatDateTime } from '@/lib/utils'
+import { auth } from '@clerk/nextjs'
 import Image from 'next/image'
 import Link from 'next/link'
 import React from 'react'
@@ -29,9 +32,19 @@ type User = {
 }
 
 const EventDetails = async ({params:{id}, searchParams:{imageUrl}}:EventProps) => {
-    const event = await getEventById(id)
-    const {dateOnly, timeOnly} = formatDateTime(event.startDateTime);
+    const event = await getEventById(id)   
+    const categoryName = event.category.name;
+    const relatedEvents = await getEventsByCategory({categoryName, id}); 
+    // console.log(relatedEvents);
+    const {sessionClaims} = auth();
+    const userId = sessionClaims?.userId as string;  
+    const currentUser = userId === event?.organizer?._id;
+
+    const {dateOnly:startDate, timeOnly:startTime} = formatDateTime(event.startDateTime);
+    const {dateOnly:endDate, timeOnly:endTime} = formatDateTime(event.endDateTime);
+
     return (
+        <>
         <div className='bg-primary-50 bg-dotted-pattern bg-contain'>
             <div className='grid grid-cols-1 py-72 md:grid-cols-2 2xl:max-w-7xl wrapper justify-between gap-6'>
                     <Image src={event.imageUrl} alt={`${event.title}`} width={2000} height={100} className='h-full min-h-[300px] object-cover object-center' />
@@ -44,13 +57,14 @@ const EventDetails = async ({params:{id}, searchParams:{imageUrl}}:EventProps) =
                         </div>
                         {event.organizer?.firstName&&event.organizer?.lastName&&<p className='p-medium-18 mt-4 md:mt-0 '>by <span className="text-primary-500/80">{event.organizer?.firstName} {event.organizer?.lastName}</span></p>}
                     </div>
-                    <Button asChild size="lg" className="md:button rounded-full py-0 px-6 mt-6 w-fit">
-                        <Link href="#events">Buy Ticket</Link>
-                    </Button>
+                    <CheckoutButton currentUser={currentUser} event={event} />
                     <div className='mt-8 flex flex-col gap-3'>
                         <div className='flex items-center gap-2'>
                             <Image alt="calendar" height={30} width={30} src="/assets/icons/calendar.svg" />
-                            <p>{dateOnly} | {timeOnly}</p>
+                            <div className='flex flex-col'>
+                                <p>{startDate} | {startTime}</p>
+                                <p>{endDate} | {endTime}</p>
+                            </div>
                         </div>
                         <div className='flex items-center gap-2'>
                             <Image alt="location" height={30} width={30} src="/assets/icons/location.svg" />
@@ -67,6 +81,13 @@ const EventDetails = async ({params:{id}, searchParams:{imageUrl}}:EventProps) =
                 </div>
             </div>
         </div>
+        <div className='wrapper'>
+            <h3 className='h3-bold'>Related Events</h3>
+            <div className='mt-8'>
+                <Collection limit={6} emptyStateSubtext="Visit the home page for more events" emptyTitle="No related events" data={relatedEvents?.data} page={1} />
+            </div>
+        </div>
+        </>
     )
 }
 
