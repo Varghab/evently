@@ -1,7 +1,8 @@
+'use client'
 import { IEvent } from '@/lib/database/models/event.model'
 import React from 'react'
 import Card from './Card'
-import { auth } from '@clerk/nextjs'
+import { useUser } from '@clerk/nextjs'
 
 type CollectionProps = {
   data: IEvent[],
@@ -15,8 +16,10 @@ type CollectionProps = {
 }
 
 const Collection = ({data, emptyTitle, emptyStateSubtext, page, totalPages=0, urlParamName, collectionType}:CollectionProps) => {
-  const {sessionClaims} = auth();
-  const userId = sessionClaims?.userId;
+  const {user} = useUser();
+  console.log(user);
+  
+  const userId = user?.id as string
   
   return (
     <>

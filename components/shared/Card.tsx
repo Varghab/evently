@@ -24,12 +24,12 @@ const Card = ({event, hasOrderLink, hidePrice, currentUser}:CardProps) => {
           </div>  
           {/* is Event creator soon... */}
           <div className='p-5 flex flex-col min-h-[230px] gap-3'>
-            {!hidePrice&&<div className='flex flex-col gap-3 md:gap-4'>
+            <div className='flex flex-col gap-3 md:gap-4'>
                 <div className='flex items-center gap-4'>
-                  <span className='rounded-full py-2 px-4 bg-green-600/20 font-semibold text-green-700'>{event.isFree?"FREE" : `₹${event.price}`}</span>
+                  {!hidePrice?<span className='rounded-full py-2 px-4 bg-green-600/10 font-semibold text-green-700'>{event.isFree?"FREE" : `₹${event.price}`}</span>:<span className='rounded-full py-2 px-4 bg-green-600/10 text-green-700'>Paid</span>}
                   <p className='bg-primary-500/10 rounded-full py-2 px-4'>{event?.category?.name}</p>
                 </div>
-            </div>}
+            </div>
             <div>
               <p className='p-regular-16'>{event?.startDateTime&&formatDateTime(event.startDateTime).dateOnly}</p>
               <p className='mt-1 p-bold-20'>{event?.title}</p>

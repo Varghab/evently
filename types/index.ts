@@ -155,3 +155,14 @@ export type CreateUserParams = {
     params: { id: string }
     searchParams: { [key: string]: string | string[] | undefined }
   }
+
+  export type DashboardData = {
+    _id: string;
+    stripeId: string;
+    totalAmount: string;
+    eventTitle: string;
+    buyerEmail: string;
+    buyerUsername: string;
+    buyerFirstname: string;
+    buyerLastname?: string;
+  }

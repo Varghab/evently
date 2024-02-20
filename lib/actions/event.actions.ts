@@ -98,6 +98,7 @@ export async function getAllEventsByUserId(username:any){
         const res = await getUserByUsername(username);                
         if(res?.success){
             const allEventsByUser = await populateQuery(Event.find({organizer: res.data._id}));
+            
             if(allEventsByUser){
                 // revalidatePath('/myprofile/:name')
                 // revalidatePath('/myprofile')

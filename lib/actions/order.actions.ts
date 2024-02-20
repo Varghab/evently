@@ -1,6 +1,6 @@
 'use server'
 
-import { CheckoutOrderParams, CreateOrderParams, GetOrdersByEventParams, GetOrdersByUserParams } from "@/types";
+import { CheckoutOrderParams, CreateOrderParams, DashboardData, GetOrdersByEventParams, GetOrdersByUserParams } from "@/types";
 import { redirect } from "next/navigation";
 import Stripe from 'stripe';
 import User from "../database/models/user.model";
@@ -8,6 +8,26 @@ import Order from "../database/models/order.model";
 import { connectToDatabase } from "../database";
 import { handleError } from "../utils";
 import { ObjectId } from "mongodb";
+import Event from "../database/models/event.model";
+import Category from "../database/models/category.model";
+
+export const filterData = (orders:any) => {
+  return orders.map((order:any)=>{
+    const { _id, stripeId, totalAmount, event, buyer } = order;
+    const { title } = order.event;
+    const { email, username, firstName, lastName } = order.buyer;
+    return {
+      _id,
+      stripeId,
+      totalAmount,
+      eventTitle: title,
+      buyerEmail:email,
+      buyerUsername: username,
+      buyerFirstname:firstName,
+      buyerLastname:lastName,
+    }
+  })
+}
 
 export async function checkoutOrder(order:CheckoutOrderParams){
     const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!);
@@ -143,3 +163,74 @@ export const createOrder = async (order: CreateOrderParams) => {
 //     handleError(error)
 //   }
 // }
+
+export async function getOrderByUserId(userId:string){
+  try {
+    await connectToDatabase();
+    const condition = {
+      buyer:userId
+    }
+    let orders = await Order.find(condition)
+      .select('event')
+      .sort({createdAt:'desc'})
+      .populate({
+        path:'event',
+        model:Event,
+        populate:[
+          {
+            path:'category',
+            model:Category
+          },
+          {
+            path:'organizer',
+            model:User
+          }
+      ],
+      })
+
+    orders = orders.map((data) => data.event);
+
+    if(orders){
+      return {
+        success: true,
+        data: JSON.parse(JSON.stringify(orders))
+      }
+    }
+  } catch (error) {
+    handleError(error)
+  }
+}
+
+export async function getOrdersBySellerId(sellerId:string){
+  try {
+    await connectToDatabase();
+    const condition = {
+      seller:sellerId
+    }
+    let orders = await Order.find(condition)
+      .sort({createdAt:'desc'})
+      .populate([
+        {
+          path:'buyer',
+          model:User
+        },
+        {
+          path:'event',
+          model:Event
+        }
+      ])
+
+    let filteredData:DashboardData[] = []; 
+
+    if(orders.length>0){
+      filteredData = filterData(orders) as DashboardData[]      
+    }
+
+      return {
+        success: true,
+        data: JSON.parse(JSON.stringify(filteredData))
+      }
+  } catch (error) {
+    handleError(error)
+  }
+}
