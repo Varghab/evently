@@ -9,6 +9,7 @@ import { z } from "zod";
 import { eventFormSchema } from "../validator";
 import { revalidatePath } from "next/cache";
 import { getUserByUsername } from "./user.actions";
+import { getCategoryByName } from "./category.actions";
 
 export async function createEvent({ userId, event, path }: CreateEventParams) {
   try {
@@ -53,14 +54,23 @@ export async function getEventById(id:string){
 export async function getAllEvents({query, category, limit=6, page}:GetAllEventsParams){
     try {
         await connectToDatabase();
-        const condition = {};
+        const titleCondition = query ? { title: { $regex: query, $options: 'i' } } : {}
+        const categoryCondition = category ? await getCategoryByName(category) : null
+        const condition = {
+            $and : [
+                titleCondition,
+                categoryCondition ? {
+                    category: categoryCondition._id
+                }: {}
+            ]
+        }
         const eventsQuery = Event.find(condition)
             .sort({createdAt:"desc"})
             .skip(0)
             .limit(limit)
         
         const events = await populateQuery(eventsQuery);
-        const eventsCount = await Event.countDocuments(condition);
+        const eventsCount = await Event.countDocuments(titleCondition);
         return {
             data: JSON.parse(JSON.stringify(events)),
             totalPages: Math.ceil(eventsCount / limit)

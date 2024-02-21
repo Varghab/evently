@@ -42,8 +42,8 @@ const OrderSchema = new Schema({
     ref: 'Event',
   },
   buyer: {
-    type: Schema.Types.ObjectId,
-    ref: 'User',
+    email: String,
+    username: String,
   },
   seller:{
     type: Schema.Types.ObjectId,

@@ -15,6 +15,7 @@ type CardProps = {
 }
 
 const Card = ({event, hasOrderLink, hidePrice, currentUser}:CardProps) => {
+  console.log(currentUser);
   
   return (
     <div className='group relative min-h-[300px] w-full max-w-[400px] flex-col overflow-hidden rounded-xl bg-white shadow-md transition-all hover:shadow-lg d:min-h-[438px]'>

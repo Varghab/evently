@@ -33,3 +33,15 @@ export const getCategoryById = async(id:string)=>{
         handleError(error);
     }
 }
+
+export const getCategoryByName = async(category:string) => {
+    try {
+        await connectToDatabase();
+        const cat = await Category.findOne({ name: category });
+        console.log(cat);
+        
+        return JSON.parse(JSON.stringify(cat));        
+    } catch (error) {
+        handleError(error);
+    }
+}

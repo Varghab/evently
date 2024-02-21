@@ -76,7 +76,7 @@ export function DataTable<TData, TValue>({
           />
           <DropdownMenu>
           <DropdownMenuTrigger asChild>
-            <Button variant="outline" className="ml-auto border-primary-500">
+            <Button variant="outline" className="ml-auto ">
               Columns
             </Button>
           </DropdownMenuTrigger>
@@ -156,7 +156,7 @@ export function DataTable<TData, TValue>({
     </div>
     <div className="flex items-center justify-end space-x-2 py-4">
         <Button
-        className='border-primary-500'
+        className=''
           variant="outline"
           size="sm"
           onClick={() => table.previousPage()}
@@ -165,7 +165,7 @@ export function DataTable<TData, TValue>({
           Previous
         </Button>
         <Button
-        className='border-primary-500'
+        className=''
           variant="outline"
           size="sm"
           onClick={() => table.nextPage()}

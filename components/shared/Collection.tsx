@@ -17,9 +17,7 @@ type CollectionProps = {
 
 const Collection = ({data, emptyTitle, emptyStateSubtext, page, totalPages=0, urlParamName, collectionType}:CollectionProps) => {
   const {user} = useUser();
-  console.log(user);
-  
-  const userId = user?.id as string
+  const userId = user?.publicMetadata?.userId as string
   
   return (
     <>

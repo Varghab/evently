@@ -13,18 +13,14 @@ import Category from "../database/models/category.model";
 
 export const filterData = (orders:any) => {
   return orders.map((order:any)=>{
-    const { _id, stripeId, totalAmount, event, buyer } = order;
-    const { title } = order.event;
-    const { email, username, firstName, lastName } = order.buyer;
+    const { _id, totalAmount} = order;
+    const { title} = order.event;
     return {
       _id,
-      stripeId,
       totalAmount,
       eventTitle: title,
-      buyerEmail:email,
-      buyerUsername: username,
-      buyerFirstname:firstName,
-      buyerLastname:lastName,
+      buyerEmail: order.buyerEmail,
+      buyerUsername: order.buyerUsername,
     }
   })
 }
@@ -50,7 +46,8 @@ export async function checkoutOrder(order:CheckoutOrderParams){
         ],
         metadata: {
           eventId: order.eventId,
-          buyerId: order.buyerId,
+          buyerEmail: order.buyer.email,
+          buyerUsername: order.buyer.username,
           sellerId: order.sellerId
         },
         mode: 'payment',
@@ -68,9 +65,7 @@ export const createOrder = async (order: CreateOrderParams) => {
   try {
     await connectToDatabase();
     console.log(order);
-    
-    const newOrder = await Order.create({...order, event: order.eventId ,buyer: order.buyerId , seller: order.sellerId});
-
+    const newOrder = await Order.create({...order, event: order.eventId ,seller: order.sellerId, buyer:{email: order.buyerEmail, username: order.buyerUsername}});
     return JSON.parse(JSON.stringify(newOrder));
   } catch (error) {
     handleError(error);
@@ -189,7 +184,7 @@ export async function getOrderByUserId(userId:string){
       })
 
     orders = orders.map((data) => data.event);
-
+      
     if(orders){
       return {
         success: true,
@@ -211,10 +206,6 @@ export async function getOrdersBySellerId(sellerId:string){
       .sort({createdAt:'desc'})
       .populate([
         {
-          path:'buyer',
-          model:User
-        },
-        {
           path:'event',
           model:Event
         }
@@ -225,7 +216,6 @@ export async function getOrdersBySellerId(sellerId:string){
     if(orders.length>0){
       filteredData = filterData(orders) as DashboardData[]      
     }
-
       return {
         success: true,
         data: JSON.parse(JSON.stringify(filteredData))

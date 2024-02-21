@@ -1,15 +1,22 @@
-import React, { useEffect } from 'react'
+import React, { useEffect, useState } from 'react'
 import { loadStripe } from '@stripe/stripe-js';
 
 import { IEvent } from '@/lib/database/models/event.model';
 import { Button } from '../ui/button';
 import { checkoutOrder } from '@/lib/actions/order.actions';
+import { getUserById } from '@/lib/actions/user.actions';
+import { UserParams } from '@/types';
 
 loadStripe(process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY!);
 
 const Checkout = ({ event, userId }: { event: IEvent, userId: string }) => {
+  const [user, setUser] = useState<UserParams>();
   useEffect(() => {
-    // Check to see if this is a redirect back from Checkout
+    const getUserInfo = async() =>{
+      const user = await getUserById(userId);
+      setUser(user);
+    }
+    getUserInfo();
     const query = new URLSearchParams(window.location.search);
     if (query.get('success')) {
       console.log('Order placed! You will receive an email confirmation.');
@@ -26,7 +33,10 @@ const Checkout = ({ event, userId }: { event: IEvent, userId: string }) => {
       eventId: event._id,
       price: event.price,
       isFree: event.isFree,
-      buyerId: userId,
+      buyer: {
+        email: user?.email || '',
+        username: user?.username || ''
+      },
       sellerId: event?.organizer?._id as string
     }
 

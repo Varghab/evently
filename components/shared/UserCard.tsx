@@ -17,9 +17,12 @@ const UserCard = async({isCurrentUser, userDetails, children, searchedUsername}:
   const {firstName, username, lastName, photo, email} = userDetails;
   const {sessionClaims} = auth();
   const userId = sessionClaims?.userId as string
+  console.log(userId);
+  
   const events = await getAllEventsByUserId(searchedUsername);
   const myTickets = await getOrderByUserId(userId);
   const dashboardData = await getOrdersBySellerId(userId);  
+  
   return (
     <div className=''>
       <section className='py-6 bg-dotted-pattern bg-cover bg-center bg-primary-50'>

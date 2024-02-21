@@ -7,10 +7,6 @@ export const columns: ColumnDef<DashboardData>[] = [
         header:'OrderID',
         
     },{
-        accessorKey: 'stripeId',
-        header:'PaymentID',
-        
-    },{
         accessorKey: 'eventTitle',
         header:'Event Title',
         
@@ -23,14 +19,6 @@ export const columns: ColumnDef<DashboardData>[] = [
     },{
         accessorKey: 'buyerUsername',
         header:'Username',
-        
-    },{
-        accessorKey: 'buyerFirstname',
-        header:'First Name',
-        
-    },{
-        accessorKey: 'buyerLastname',
-        header:'Last Name',
         
     },{
         accessorKey: 'buyerEmail',

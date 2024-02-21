@@ -115,14 +115,18 @@ export type CreateUserParams = {
     eventId: string
     price: string
     isFree: boolean
-    buyerId: string,
+    buyer: {
+      email: string, 
+      username:string
+    },
     sellerId: string
   }
   
   export type CreateOrderParams = {
     stripeId: string
     eventId: string
-    buyerId: string
+    buyerEmail: string
+    buyerUsername: string
     totalAmount: string
     createdAt: Date
     sellerId: string
