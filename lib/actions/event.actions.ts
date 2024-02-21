@@ -20,6 +20,7 @@ export async function createEvent({ userId, event, path }: CreateEventParams) {
         category:categoryId,
         organizer: userId
     })
+    revalidatePath('/')
     return JSON.parse(JSON.stringify(newEvent));
 } catch (error) {
     console.log("Error occured in event action!");
