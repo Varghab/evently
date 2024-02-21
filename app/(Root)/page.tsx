@@ -9,11 +9,12 @@ import Image from "next/image";
 import Link from "next/link";
 
 export default async function Home({searchParams}:SearchParamProps) {
+  const page = Number(searchParams?.page) || 0
   const events = await getAllEvents({
     query: (searchParams?.search as string) || '',
-    limit:6,
+    limit:4,
     category:(searchParams?.category as string) || '',
-    page:1
+    page: page,
   }) as {data:IEvent[],totalPages:number}
 
   return (
@@ -41,10 +42,9 @@ export default async function Home({searchParams}:SearchParamProps) {
           emptyTitle="No events found"
           emptyStateSubtext="Come back later"
           totalPages={events?.totalPages}
-          limit={6}
-          page={0}
+          limit={4}
+          page={page}
           collectionType="Events_Organized"
-          urlParamName=""
         />
       </section>
     </>

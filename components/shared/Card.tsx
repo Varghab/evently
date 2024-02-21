@@ -15,7 +15,7 @@ type CardProps = {
 }
 
 const Card = ({event, hasOrderLink, hidePrice, currentUser}:CardProps) => {
-  console.log(currentUser);
+  console.log("isCurrentUser", currentUser);
   
   return (
     <div className='group relative min-h-[300px] w-full max-w-[400px] flex-col overflow-hidden rounded-xl bg-white shadow-md transition-all hover:shadow-lg d:min-h-[438px]'>
@@ -35,7 +35,7 @@ const Card = ({event, hasOrderLink, hidePrice, currentUser}:CardProps) => {
               <p className='p-regular-16'>{event?.startDateTime&&formatDateTime(event.startDateTime).dateOnly}</p>
               <p className='mt-1 p-bold-20'>{event?.title}</p>
             </div>
-            <p className='flex-1 text-primary-500/90 flex items-end'>{event?.organizer?.firstName} {event?.organizer?.lastName &&event?.organizer?.lastName}</p>
+            <p className='flex-1 text-primary-500/90 flex items-end'>{event?.organizer?.firstName} {event?.organizer?.lastName && event?.organizer?.lastName}</p>
           </div>
         </div>
       </Link>

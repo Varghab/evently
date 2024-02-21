@@ -5,7 +5,7 @@ import React from 'react';
 const EventsOrganized = ({events}:{events:IEvent[]}) => {
   return (
     <div>
-      <Collection data={events} emptyStateSubtext='' page={1} limit={6} emptyTitle='No events has been created yet.'  />    
+      <Collection data={events} emptyStateSubtext='' page={1} limit={3} emptyTitle='No events has been created yet.'  />    
     </div>
   )
 }

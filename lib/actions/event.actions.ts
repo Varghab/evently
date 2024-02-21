@@ -52,7 +52,7 @@ export async function getEventById(id:string){
     }
 }
 
-export async function getAllEvents({query, category, limit=6, page}:GetAllEventsParams){
+export async function getAllEvents({query, category, limit=4, page}:GetAllEventsParams){
     try {
         await connectToDatabase();
         const titleCondition = query ? { title: { $regex: query, $options: 'i' } } : {}
@@ -67,7 +67,7 @@ export async function getAllEvents({query, category, limit=6, page}:GetAllEvents
         }
         const eventsQuery = Event.find(condition)
             .sort({createdAt:"desc"})
-            .skip(0)
+            .skip(Number(limit)*page)
             .limit(limit)
         
         const events = await populateQuery(eventsQuery);

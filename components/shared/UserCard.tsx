@@ -22,9 +22,6 @@ const UserCard = async({isCurrentUser, userDetails, children, searchedUsername}:
   const events = await getAllEventsByUserId(searchedUsername);
   const myTickets = await getOrderByUserId(useremail);
   const dashboardData = await getOrdersBySellerId(userId);  
-  console.log(dashboardData);
-  
-  
   
   return (
     <div className=''>

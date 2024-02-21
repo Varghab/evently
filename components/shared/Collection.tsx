@@ -3,6 +3,7 @@ import { IEvent } from '@/lib/database/models/event.model'
 import React from 'react'
 import Card from './Card'
 import { useUser } from '@clerk/nextjs'
+import Pagination from './Pagination'
 
 type CollectionProps = {
   data: IEvent[],
@@ -15,9 +16,10 @@ type CollectionProps = {
   collectionType?: "Events_Organized" | "My_Tickets" | "All_Events"
 }
 
-const Collection = ({data, emptyTitle, emptyStateSubtext, page, totalPages=0, urlParamName, collectionType}:CollectionProps) => {
+const Collection = ({data, emptyTitle, emptyStateSubtext, page, totalPages=1, urlParamName, collectionType}:CollectionProps) => {
   const {user} = useUser();
   const userId = user?.publicMetadata?.userId as string
+  console.log(totalPages);
   
   return (
     <>
@@ -34,6 +36,7 @@ const Collection = ({data, emptyTitle, emptyStateSubtext, page, totalPages=0, ur
               )
             })}
           </ul>
+          {totalPages>1&&<Pagination totalPages={totalPages} page={page} urlParamName={urlParamName} />}
         </div>
       :
       <div className='wrapper rounded-[14px] flex-center min-h-[200px] w-full flex-col bg-grey-50 text-center py-20'>
