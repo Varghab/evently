@@ -70,10 +70,9 @@ export async function deleteUser(clerkId: string) {
       //   { _id: { $in: userToDelete.events } },
       //   { $pull: { organizer: userToDelete._id } }
       // ),
-      Event.deleteMany({'organizer._id':userToDelete._id}),
-
+      Event.deleteMany({organizer:userToDelete._id}),
       // Update the 'orders' collection to remove references to the user
-      Order.updateMany({ _id: { $in: userToDelete.orders } }, { $unset: { buyer: 1 } }),
+      Order.deleteMany({seller: userToDelete._id})
     ])
 
     // Delete user

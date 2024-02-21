@@ -16,12 +16,15 @@ type UserCardProps = {
 const UserCard = async({isCurrentUser, userDetails, children, searchedUsername}: UserCardProps) => {
   const {firstName, username, lastName, photo, email} = userDetails;
   const {sessionClaims} = auth();
-  const userId = sessionClaims?.userId as string
-  console.log(userId);
-  
+  const userId = sessionClaims?.userId as string  
+  const user = await currentUser();
+  const useremail = user?.emailAddresses[0].emailAddress || '';
   const events = await getAllEventsByUserId(searchedUsername);
-  const myTickets = await getOrderByUserId(userId);
+  const myTickets = await getOrderByUserId(useremail);
   const dashboardData = await getOrdersBySellerId(userId);  
+  console.log(dashboardData);
+  
+  
   
   return (
     <div className=''>

@@ -19,8 +19,8 @@ export const filterData = (orders:any) => {
       _id,
       totalAmount,
       eventTitle: title,
-      buyerEmail: order.buyerEmail,
-      buyerUsername: order.buyerUsername,
+      buyerEmail: order.buyer.email,
+      buyerUsername: order.buyer.username,
     }
   })
 }
@@ -159,11 +159,11 @@ export const createOrder = async (order: CreateOrderParams) => {
 //   }
 // }
 
-export async function getOrderByUserId(userId:string){
+export async function getOrderByUserId(useremail:string){
   try {
     await connectToDatabase();
     const condition = {
-      buyer:userId
+      'buyer.email': useremail
     }
     let orders = await Order.find(condition)
       .select('event')
@@ -210,7 +210,7 @@ export async function getOrdersBySellerId(sellerId:string){
           model:Event
         }
       ])
-
+    
     let filteredData:DashboardData[] = []; 
 
     if(orders.length>0){
